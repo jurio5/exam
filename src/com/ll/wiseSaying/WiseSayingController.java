@@ -42,16 +42,15 @@ public class WiseSayingController {
         System.out.println("번호 / 작가 / 명언");
         System.out.println("-----------------------");
 
-        for (WiseSaying wiseSaying : wiseSayings.reversed()) {
-            System.out.println(wiseSaying.getId() + " / " + wiseSaying.getAuthor() + " / " + wiseSaying.getComment());
-        }
+        wiseSayings.stream().sorted((a , b) -> Integer.compare(b.getId(), a.getId())).forEach(e -> System.out.println(e.getId() + " / " + e.getAuthor() + " / " + e.getComment()));
     }
 
     public void delete(String cmd) {
         try {
             String div = cmd.split("=", 2)[1];
             int convert = Integer.parseInt(div);
-            boolean removed = wiseSayings.removeIf(s -> s.getId() == convert);
+            WiseSaying serch = wiseSayings.stream().filter(e -> e.getId() == convert).findFirst().orElse(null);
+            boolean removed = wiseSayings.remove(serch);
 
             if (removed) {
                 System.out.println(convert + "번 명언이 삭제되었습니다.");
@@ -67,14 +66,7 @@ public class WiseSayingController {
     public void modify(String cmd) {
         String div = cmd.split("=",2)[1];
         int convert = Integer.parseInt(div);
-        WiseSaying s = null;
-
-        for (WiseSaying wiseSaying : wiseSayings) {
-            if (wiseSaying.getId() == convert) {
-                s = wiseSaying;
-                break;
-            }
-        }
+        WiseSaying s = wiseSayings.stream().filter(e -> e.getId() == convert).findFirst().orElse(null);
 
         System.out.println("명언(기존) : " + s.getComment());
         System.out.print("명언 : ");
